@@ -17,6 +17,11 @@ function drawAllUsers(){
 	}
 }
 
+function loadAllUsers(data){
+	users = data;
+	drawAllUsers;
+}
+
 
 
 function drawMe(){
@@ -30,6 +35,8 @@ function setup(){
 	myX = 100;
 	myY = 100;
 	
+	socket.emit('load', {'x': myX, 'y': myY, 'socketID': socket.id});
+	socket.on('load', loadAllUsers);
 	socket.on('movement', drawMovement);
 }
 

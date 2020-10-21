@@ -18,9 +18,19 @@ io.on('connect', socket => {
 	locations[socket.id]['y'] = 100;
 	socket.emit('load', locations);
 	*/
+	socket.on('load', data  =>{
+		console.log("load captured");
+		locations[socket.id] = data;
+		socket.emit('load', locations);
+	})
 
 	socket.on('movement', data =>{
 		const {x, y} = data;
+
+		if(locations[socket.id]){
+			locations[socket.id]['x'] = x;
+			locations[socket.id]['y'] = y;
+		}
 		console.log("movement captured");
 		const newData = {x, y, socketID: socket.id};
 		io.emit('movement', newData);
