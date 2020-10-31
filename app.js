@@ -11,30 +11,35 @@ let locations = {}
 
 io.on('connect', socket => {
 	console.log(socket.id, 'has just connected');
-	/*
-	locations[socket.id] = {};
-	locations[socket.id]["socketID"] = socket.id
-	locations[socket.id]['x'] = 100;
-	locations[socket.id]['y'] = 100;
-	socket.emit('load', locations);
-	*/
 	socket.on('load', data  =>{
-		console.log("load captured");
-		locations[socket.id] = data;
-		socket.emit('load', locations);
+		const {user} = data;
+		//console.log("load captured");
+		locations[socket.id] = user;
+		io.emit('load', locations);
 	})
 
 	socket.on('movement', data =>{
-		const {x, y} = data;
+		const {user} = data;
 
 		if(locations[socket.id]){
-			locations[socket.id]['x'] = x;
-			locations[socket.id]['y'] = y;
+			locations[socket.id] = user;
 		}
-		console.log("movement captured");
-		const newData = {x, y, socketID: socket.id};
+		const newData = {user: user};
+		//console.log(user);
 		io.emit('movement', newData);
 	})
+
+	socket.on('disconnect', () =>{
+		//console.log(socket.id, "disconnected");
+		delete locations[socket.id];
+		io.emit('deleted', {socketID: socket.id});
+	});
+
+	socket.on('message', (data) =>{
+		const {message} = data;
+		io.emit('message', {message: message});
+	});
+
 })
 
 server.listen(3000);
