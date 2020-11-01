@@ -5,6 +5,21 @@
         <script src="./p5-speech/lib/p5.speech.js"></script>
 </head>
 <body>
+
+    <button id="createButton" type="button">Create A New Room</button>
+    <div id="newRoom">
+    </div>
+    <br/>
+
+    <div id="joinRoom">
+    <form action="./index.html">
+    <input id="joinInput" type="text">
+    </form>
+    <button id="joinButton" type="button">Join A Room</button>
+    </div>
+    </br>
+
+    <script src="./index.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./sketch.js"></script>
 </body>

@@ -8,6 +8,7 @@ let users = {};
 let myX, myY;
 let myMessage = '';
 let me;
+let myUsername = "";
 
 //recorder
 let myRec;
@@ -15,6 +16,7 @@ let mySpeaker;
 let sayCount = 0;
 let recordedStarted = false;
 let isTalking = false;
+let usernameRecorder;
 
 //cow walk
 let cowWalkImg;
@@ -88,7 +90,7 @@ function drawMovement(data){
 	}
 	else{
 		//console.log("Uncreated user", user);
-		users[user.socketID] = new User(user.x, user.y, user.socketID);	
+		users[user.socketID] = new User(user.x, user.y, user.username, user.socketID, user.roomID);	
 	}
 
 	fill(0);
@@ -109,7 +111,12 @@ function loadAllUsers(data){
 }
 
 function makeUser(user){
-	return new User(user.x, user.y,  user.socketID, 
+	/*
+	return new User(user.x, user.y, user.username, user.socketID, 
+		user.status, user.walkLeftInd, 
+		user.walkRightInd, user.walkDownInd, user.walkUpInd);
+		*/
+	return new User(user.x, user.y, user.username, user.socketID, user.roomID,
 		user.status, user.walkLeftInd, 
 		user.walkRightInd, user.walkDownInd, user.walkUpInd);
 }
@@ -135,12 +142,26 @@ let loaded = false;
 
 function setup(){
 	createCanvas(500, 500);	
+
+	//configure username recorder
+	usernameRecorder = new p5.SpeechRec();
+	usernameRecorder.onResult = () =>{ 
+		myUsername = usernameRecorder.resultString
+	};
+	usernameRecorder.onEnd = () => {
+		if(myUsername != ""){
+			//me.username = myUsername;
+			game_state = 2;
+		}
+		startedRecordingUsername = false;
+	};
 }
 
 function loadApp(){
 	myX = 100;
 	myY = 100;
-	me = new User(100, 100, socket.id);
+	//me = new User(100, 100, myUsername, socket.id);
+	me = new User(100, 100, myUsername, socket.id, roomID);
 
 	//configure audio in
 	//and speaker sound
@@ -155,34 +176,61 @@ function loadApp(){
 	myRec.onEnd = onEnd;
 	myRec.onError = onRecorderError;
 	//myRec.start();
+	
 
 	//socket.emit('load', {'x': me.x, 'y': me.y, 'socketID': socket.id}user: me);
 	socket.emit('load', {user: me});
 	socket.on('load', loadAllUsers);
 	socket.on('movement', drawMovement);
-	socket.on('deleted', (data) =>{ delete users[data.socketID]});
+	socket.on('deleted', (data) =>{ 
+		delete users[data.socketID]
+		mySpeaker.speak("oh mooooo! we lost one cow");
+	});
 	socket.on('message', (data) => {
 		//console.log("speaking");
 		mySpeaker.speak(data.message);
 	});
+}
 
-	if(!looping){
-		bgSound.setVolume(0.2);
-		bgSound.loop();
-		looping = true;
-	}
+function drawGetUsername(){
+	background(47,129,54);
+	textAlign(CENTER);
+	fill(0)
+	rect(200, 200, 100, 100);
+	fill(180,0,0) ;
+	rect(200, 200, 100, 100);
+	fill(0, 80)
+	rect(200, 200, 100, 100);
+	fill(255)
+	text("Click \nand \nRecord \nYour Name", 250, 230);
+	rectMode(CORNER);
+
 
 }
 
+function startBgSound(){
+		if(!looping){
+			bgSound.setVolume(0.2);
+			bgSound.loop();
+			looping = true;
+		}
+}
+
 function draw(){
+	//console.log("Room id is: ", roomID);
+	noStroke();
 	if(game_state == 0){
 		drawStart();
 	}
 	else if(game_state == 1){
+		drawGetUsername();
+	}
+	else if(game_state == 2){
 		loadApp();
-		game_state = 2;
+		game_state = 3;
 	}
 	else{
+		startBgSound();
 		background(255);
 		drawBgSoilTiles();
 		drawBgGrassTiles();
@@ -210,13 +258,25 @@ function drawStart(){
 	rectMode(CORNER);
 }
 
+let startedRecordingUsername = false;
+
 function mousePressed(){
-	console.log("pressed");
-	if(mouseX > 200 && mouseX < 300 && mouseY > 200 && mouseY < 300){
-		game_state = 1;
+	//console.log("pressed");
+	if(game_state == 0 && mouseX > 200 && mouseX < 300 && mouseY > 200 && mouseY < 300){
+		if(roomID){
+			game_state = 1;
+		}
 	}
 
-	if(game_state == 2 && mouseIsPressed && mouseX > 400 && mouseX < 450 && mouseY > 400 && mouseY < 450){
+	if(game_state == 1 && mouseX > 200 && mouseX < 300 && mouseY > 200 && mouseY < 300){
+		if(!startedRecordingUsername){
+			startedRecordingUsername = true;
+			usernameRecorder.start();
+		}
+	}
+
+
+	if(game_state == 3 && mouseIsPressed && mouseX > 400 && mouseX < 450 && mouseY > 400 && mouseY < 450){
 		console.log("Should Recored");
 		if(!recordedStarted){
 			myRec.start();
@@ -224,16 +284,17 @@ function mousePressed(){
 		}
 	}
 
-	if(game_state == 2 && mouseIsPressed && mouseX > 320 && mouseX < 370 && mouseY > 400 && mouseY < 450){
+	if(game_state == 3 && mouseIsPressed && mouseX > 320 && mouseX < 370 && mouseY > 400 && mouseY < 450){
 		if(myMessage != "" && sayCount == 0){
 			sayCount += 1;
 			console.log("speaking");
 			//mySpeaker.speak(myMessage);
-			socket.emit("message", {message: myMessage});	
+			socket.emit("message", {message: myMessage, roomID: roomID});	
 			myMessage = "";
 		}
 	}
 }
+
 function speechEnded(){
 	sayCount = 0;
 }
@@ -302,7 +363,7 @@ function parseResult(){
 function drawTextField(){
 	fill(255, 50);
 	rect(50, 400, 200, 50);
-	textAlign(LEFT)
+	textAlign(LEFT);
 	fill(255)
 	if(!recordedStarted){
 		text(myMessage, 70, 425);
@@ -370,10 +431,12 @@ function drawSoilTile(i, xPos, yPos){
 
 class User {
 
-	constructor(x, y, socketID, status, walkLeftInd, walkRightInd, walkDownInd, walkUpInd){
+	constructor(x, y, username, socketID, roomID, status, walkLeftInd, walkRightInd, walkDownInd, walkUpInd){
 		this.x = x;
 		this.y = y;
+		this.username = username;
 		this.socketID = socketID;
+		this.roomID = roomID;
 		this.message = "";
 		//status 0 = idle,  1 = walk right, 2 walk left 
 		this.status = status ? status : 0;
@@ -444,7 +507,7 @@ class User {
 
 	display(){
 		fill(255);
-		text(this.socketID, this.x, this.y);
+		text(this.username, this.x + 40, this.y + 40);
 		//image(cowWalkImg, this.x, this.y, tileSize, tileSize, this.walkRightInd * tileSize, tileSize * 3, tileSize, tileSize);
 		if(this.status == 1){
 			let ind = floor(this.walkRightInd);
