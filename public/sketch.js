@@ -202,7 +202,7 @@ function drawGetUsername(){
 	fill(0, 80)
 	rect(200, 200, 100, 100);
 	fill(255)
-	text("Click \nand \nRecord \nYour Name", 250, 230);
+	text("Record \nYour Name\n(click to restart)", 250, 230);
 	rectMode(CORNER);
 
 
@@ -366,10 +366,11 @@ function drawTextField(){
 	textAlign(LEFT);
 	fill(255)
 	if(!recordedStarted){
-		text(myMessage, 70, 425);
+		let displayText = myMessage.length < 90 ? myMessage: (myMessage.substr(0, 90) + '...');
+		text(displayText, 60, 415);
 	}
 	else{
-		text("recording user...", 70, 425);
+		text("recording user...", 60, 415);
 	}
 }
 
