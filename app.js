@@ -68,10 +68,16 @@ io.on('connect', socket => {
 	});
 
 	socket.on('message', (data) =>{
-		const {message, roomID} = data;
-		io.to(roomID).emit('message', {message: message});
+		const {message, roomID, from} = data;
+		io.to(roomID).emit('message', {message: message, from: from});
 	});
 
 })
 
-server.listen(3000);
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+server.listen(port);
