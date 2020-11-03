@@ -188,7 +188,9 @@ function loadApp(){
 	});
 	socket.on('message', (data) => {
 		//console.log("speaking");
-		mySpeaker.speak(data.message);
+		let text = "from " + data.from + ': ' + data.message;
+		//mySpeaker.speak(data.message);
+		mySpeaker.speak(text);
 	});
 }
 
@@ -289,7 +291,7 @@ function mousePressed(){
 			sayCount += 1;
 			console.log("speaking");
 			//mySpeaker.speak(myMessage);
-			socket.emit("message", {message: myMessage, roomID: roomID});	
+			socket.emit("message", {message: myMessage, roomID: roomID, from: me.username});	
 			myMessage = "";
 		}
 	}

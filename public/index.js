@@ -21,10 +21,12 @@ function getUniqueId(){
 
 function setRoomId(){
 	let joinInput= document.querySelector("#joinInput");
-	roomID = joinInput.value;
-	let joinDiv = document.querySelector("#joinRoom");
-	let p = document.createElement("p");
-	p.innerText = "joined " + roomID;
-	joinDiv.appendChild(p);
-	joinInput.remove();
+	if(joinInput.value !== ""){
+		roomID = joinInput.value;
+		let joinDiv = document.querySelector("#joinRoom");
+		let p = document.createElement("p");
+		p.innerText = "joined " + roomID;
+		joinDiv.appendChild(p);
+		joinInput.remove();
+	}
 }
