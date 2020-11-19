@@ -13,7 +13,7 @@ Technologies used are: Node.js, Express, Socket.io, P5.js, Vanilla Javascript
 
 ## Some implementation highlights
 
-###Frontend
+### Frontend
 The frontend implementation of moo chat uses the p5 library for the application’s canvas and vanilla js for the create and join room logic.
 
 
