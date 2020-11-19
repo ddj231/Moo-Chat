@@ -1,5 +1,3 @@
-# Roam-Chat
-
 # Moo Chat (formerly Roam)
 
 [playable version](https://desolate-sands-25998.herokuapp.com)
