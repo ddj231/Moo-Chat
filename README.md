@@ -2,6 +2,8 @@
 
 # Moo Chat (formerly Roam)
 
+[playable version](https://desolate-sands-25998.herokuapp.com)
+
 ## Overview
 Moo Chat is a 2D chat application that allows users to enter rooms (farms) and chat with their friends. 
 The application uses speech to text for getting user message input and text to speech for presenting the sent message to other users in a room.
