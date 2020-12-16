@@ -8,13 +8,40 @@ img {
     height: 300px;
     width: 300px;
 }
+body {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+#description {
+    padding: 100px; 
+    text-align: left; 
+}
 </style>
 </head>
 <body>
 
-    <h1>Moo Chat (formerly Roam)</h1>
-    <h3>*the application is at the bottom of this page*</h3>
+    <h1>Moo Chat</h1>
 
+    <i>create and/or join a room, then click start</i>
+    <br>
+    <br>
+
+    <button id="createButton" type="button">Create A New Room</button>
+    <div id="newRoom">
+    </div>
+    <br/>
+
+    <div id="joinRoom">
+    <form action="./index.html">
+    <input id="joinInput" type="text">
+    </form>
+    <button id="joinButton" type="button">Join Room</button>
+    </div>
+    </br>
+
+    <div id="moochat"></div>
+    <div id="description">
     <h2>Overview</h2>
     <p>
         Moo Chat is a 2D chat application that allows users to enter rooms (farms) and chat with their friends. 
@@ -25,7 +52,7 @@ img {
         Technologies used are: Node.js, Express, Socket.io, P5.js, Vanilla Javascript
     </p>
     <h2>Start-up flow</h2>
-    <h3>*please use google chrome as your browser when using the chat application*</h3>
+    <h3>*use google chrome as your browser when using the chat application*</h3>
     <p>
         To start a user can either click the create room button or enter an already created rooms name into the “join room” input box.
         <br/>
@@ -92,22 +119,7 @@ img {
             <br/>
             I iterated on my implementation of the backend, first starting with an implementation of sending and receiving user location data, to sending and receiving user objects (adding deserialization of those objects) -- then adding logic for rooms.
         </p>
-
-    <hr class="solid">
-    <h1>Moo Chat</h1>
-
-    <button id="createButton" type="button">Create A New Room</button>
-    <div id="newRoom">
     </div>
-    <br/>
-
-    <div id="joinRoom">
-    <form action="./index.html">
-    <input id="joinInput" type="text">
-    </form>
-    <button id="joinButton" type="button">Join A Room</button>
-    </div>
-    </br>
 
     <script src="./index.js"></script>
     <script src="/socket.io/socket.io.js"></script>

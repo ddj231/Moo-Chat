@@ -141,8 +141,8 @@ function preload(){
 let loaded = false;
 
 function setup(){
-	createCanvas(500, 500);	
-
+	var canvas = createCanvas(500, 500);	
+	canvas.parent("moochat");
 	//configure username recorder
 	usernameRecorder = new p5.SpeechRec();
 	usernameRecorder.onResult = () =>{ 
