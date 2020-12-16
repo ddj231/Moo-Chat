@@ -27,4 +27,4 @@ The backend implementation of moo chat uses Node/Express to serve static files. 
 
 I iterated on my implementation of the backend, first starting with an implementation of sending and receiving user location data, to sending and receiving user objects (adding deserialization of those objects) -- then adding logic for rooms.
 
-![gameplay screenshot](./public/images/Screenshots/gameplay.png)
+![gameplay screenshot](./public/images/Screenshots/test.png)
